@@ -331,8 +331,8 @@ if [ -z "$py_version" ] || [ "$py_major" -lt 3 ] || [ "$py_major" -eq 3 -a "$py_
     nvm use $node_version
 fi
 
-# Install bench
-echo -e "${YELLOW}Now let's install bench${NC}"
+# Install bench from your forked repository
+echo -e "${YELLOW}Now let's install bench from your forked repository${NC}"
 sleep 2
 
 # Check if EXTERNALLY-MANAGED file exists and remove it
@@ -341,11 +341,10 @@ if [[ -n "$externally_managed_file" ]]; then
     sudo python3 -m pip config --global set global.break-system-packages true
 fi
 
-
 sudo apt install python3-pip -y
-sudo pip3 install frappe-bench
+sudo pip3 install git+https://github.com/ggraza/bench.git
 
-# Initiate bench in frappe-bench folder, but get a supervisor can't restart bench error...
+# Initiate bench in frappe-bench folder
 echo -e "${YELLOW}Initialising bench in frappe-bench folder.${NC}"
 echo -e "${LIGHT_BLUE}If you get a restart failed, don't worry, we will resolve that later.${NC}"
 bench init frappe-bench --version $bench_version --verbose
@@ -368,16 +367,22 @@ sudo chmod -R o+rx $(echo $HOME)
 
 bench new-site $site_name --db-root-password $sqlpasswrd --admin-password $adminpasswrd
 
-# Prompt user to confirm if they want to install ERPNext
+# Install frappe app from your forked repository
+echo -e "${YELLOW}Installing frappe app from your forked repository${NC}"
+sleep 2
+bench get-app frappe https://github.com/ggraza/frappe.git --branch $bench_version && \
+bench --site $site_name install-app frappe
 
+# Prompt user to confirm if they want to install ERPNext
 echo -e "${LIGHT_BLUE}Would you like to install ERPNext? (yes/no)${NC}"
 read -p "Response: " erpnext_install
 erpnext_install=$(echo "$erpnext_install" | tr '[:upper:]' '[:lower:]')
 case "$erpnext_install" in
     "yes" | "y")
     sleep 2
-    # Setup supervisor and nginx config
-    bench get-app erpnext --branch $bench_version && \
+    # Install erpnext from your forked repository
+    echo -e "${YELLOW}Installing ERPNext from your forked repository${NC}"
+    bench get-app erpnext https://github.com/ggraza/erpnext.git --branch $bench_version && \
     bench --site $site_name install-app erpnext
     sleep 1
 esac
@@ -435,9 +440,8 @@ case "$continue_prod" in
         bench setup redis
         sudo supervisorctl reload
     fi
-    echo -e "${YELLOW}Restarting bench to apply all changes and optimizing environment pernissions.${NC}"
+    echo -e "${YELLOW}Restarting bench to apply all changes and optimizing environment permissions.${NC}"
     sleep 1
-
 
     # Now to make sure the environment is fully setup
     sudo chmod 755 $(echo $HOME)
@@ -453,8 +457,9 @@ case "$continue_prod" in
     case "$hrms_install" in
         "yes" | "y")
         sleep 2
-        # Setup supervisor and nginx config
-        bench get-app hrms --branch $bench_version && \
+        # Install hrms from your forked repository
+        echo -e "${YELLOW}Installing HRMS from your forked repository${NC}"
+        bench get-app hrms https://github.com/ggraza/hrms.git --branch $bench_version && \
         bench --site $site_name install-app hrms
         sleep 1
     esac
@@ -466,7 +471,7 @@ case "$continue_prod" in
 
     case "$continue_ssl" in
         "yes" | "y")
-            echo -e "${YELLOW}Make sure your domain name is pointed to the IP of this instance and is reachable before your proceed.${NC}"
+            echo -e "${YELLOW}Make sure your domain name is pointed to the IP of this instance and is reachable before you proceed.${NC}"
             sleep 3
             # Prompt user for email
             read -p "Enter your email address: " email_address
