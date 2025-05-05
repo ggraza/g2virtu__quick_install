@@ -103,12 +103,12 @@ ask_twice() {
         fi
     done
 }
-echo -e "${LIGHT_BLUE}Welcome to the ERPNext Installer...${NC}"
+echo -e "${LIGHT_BLUE}Welcome to the ERP Installer...${NC}"
 echo -e "\n"
 sleep 3
 
 # Prompt user for version selection with a preliminary message
-echo -e "${YELLOW}Please enter the number of the corresponding ERPNext version you wish to install:${NC}"
+echo -e "${YELLOW}Please enter the number of the corresponding ERP version you wish to install:${NC}"
 
 versions=("Version 13" "Version 14" "Version 15")
 select version_choice in "${versions[@]}"; do
@@ -207,7 +207,7 @@ py_major=$(echo "$py_version" | cut -d '.' -f 1)
 py_minor=$(echo "$py_version" | cut -d '.' -f 2)
 
 if [ -z "$py_version" ] || [ "$py_major" -lt 3 ] || [ "$py_major" -eq 3 -a "$py_minor" -lt 10 ]; then
-    echo -e "${LIGHT_BLUE}It appears this instance does not meet the minimum Python version required for ERPNext 14 (Python3.10)...${NC}"
+    echo -e "${LIGHT_BLUE}It appears this instance does not meet the minimum Python version required for ERP 14 (Python3.10)...${NC}"
     sleep 2 
     echo -e "${YELLOW}Not to worry, we will sort it out for you${NC}"
     sleep 4
@@ -310,7 +310,7 @@ echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This
 # Source .profile to load the new environment variables in the current session
 source ~/.profile
 
-# Conditional Node.js installation based on the version of ERPNext selected
+# Conditional Node.js installation based on the version of ERP selected
 if [[ "$bench_version" == "version-15" ]]; then
     nvm install 18
     node_version="18"
@@ -373,15 +373,15 @@ sleep 2
 bench get-app frappe https://github.com/ggraza/frappe.git --branch $bench_version && \
 bench --site $site_name install-app frappe
 
-# Prompt user to confirm if they want to install ERPNext
-echo -e "${LIGHT_BLUE}Would you like to install ERPNext? (yes/no)${NC}"
+# Prompt user to confirm if they want to install ERP
+echo -e "${LIGHT_BLUE}Would you like to install ERP? (yes/no)${NC}"
 read -p "Response: " erpnext_install
 erpnext_install=$(echo "$erpnext_install" | tr '[:upper:]' '[:lower:]')
 case "$erpnext_install" in
     "yes" | "y")
     sleep 2
-    # Install erpnext from your forked repository
-    echo -e "${YELLOW}Installing ERPNext from your forked repository${NC}"
+    # Install erp from your forked repository
+    echo -e "${YELLOW}Installing ERP from your forked repository${NC}"
     bench get-app erpnext https://github.com/ggraza/erpnext.git --branch $bench_version && \
     bench --site $site_name install-app erpnext
     sleep 1
@@ -513,12 +513,12 @@ case "$continue_prod" in
     fi
 
     echo -e "${GREEN}--------------------------------------------------------------------------------"
-    echo -e "Congratulations! You have successfully installed ERPNext $version_choice."
-    echo -e "You can start using your new ERPNext installation by visiting https://$site_name"
+    echo -e "Congratulations! You have successfully installed ERP $version_choice."
+    echo -e "You can start using your new ERP installation by visiting https://$site_name"
     echo -e "(if you have enabled SSL and used a Fully Qualified Domain Name"
     echo -e "during installation) or http://$server_ip to begin."
     echo -e "Install additional apps as required. Visit https://docs.erpnext.com for Documentation."
-    echo -e "Enjoy using ERPNext!"
+    echo -e "Enjoy using ERP!"
     echo -e "--------------------------------------------------------------------------------${NC}"
         ;;
     *)
@@ -537,7 +537,7 @@ case "$continue_prod" in
     sleep 5
 
     echo -e "${GREEN}-----------------------------------------------------------------------------------------------"
-    echo -e "Congratulations! You have successfully installed Frappe and ERPNext $version_choice Development Environment."
+    echo -e "Congratulations! You have successfully installed Frappe and ERP $version_choice Development Environment."
     echo -e "Start your instance by running bench start to start your server and visiting http://$server_ip:8000"
     echo -e "Install additional apps as required. Visit https://frappeframework.com for Developer Documentation."
     echo -e "Enjoy development with Frappe!"
